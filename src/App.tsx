@@ -2,8 +2,8 @@ import React from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { ScrollShowcase } from './components/ScrollShowcase';
+import { FeatureShowcase } from './components/FeatureShowcase';
 import { LiveSimulator } from './components/LiveSimulator';
-import { ArchitectureBento } from './components/ArchitectureBento';
 import { ComparisonTable } from './components/ComparisonTable';
 import { FAQ } from './components/FAQ';
 import { DownloadCTA } from './components/DownloadCTA';
@@ -18,8 +18,8 @@ export function App() {
       <main className="relative z-10">
         <Hero />
         <ScrollShowcase />
+        <FeatureShowcase />
         <LiveSimulator />
-        <ArchitectureBento />
         <ComparisonTable />
         <FAQ />
         <DownloadCTA />

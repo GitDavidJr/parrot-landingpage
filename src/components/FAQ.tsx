@@ -44,13 +44,9 @@ export const FAQ: React.FC = () => {
     <section id="faq" className="py-24 bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200 mb-4">
-            <HelpCircle className="w-3.5 h-3.5 text-slate-600" />
-            <span>Perguntas Frequentes</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950 font-sans">
-            Tudo o que você precisa saber sobre o Parrot.
+        <div className="text-center mb-14">
+          <h2 className="text-3xl sm:text-5xl font-medium tracking-tight text-slate-900 font-sans">
+            Perguntas Frequentes
           </h2>
         </div>
 

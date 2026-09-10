@@ -9,18 +9,12 @@ export const DownloadCTA: React.FC = () => {
     <section id="download" className="py-24 bg-gradient-to-b from-white to-slate-100 border-t border-slate-200/80 relative overflow-hidden">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         
-        {/* Floating App Icon Badge */}
-        <div className="w-20 h-20 mx-auto mb-8 rounded-3xl p-1 bg-white shadow-xl border border-slate-200/90 flex items-center justify-center transform hover:scale-105 transition-transform">
-          <img src="/assets/icon.png" alt="Parrot Logo" className="w-full h-full object-contain rounded-2xl" />
-        </div>
+        {/* Raw Parrot Icon */}
+        <img src="/assets/icon.png" alt="Parrot" className="w-16 h-16 object-contain mx-auto mb-6 transition-transform hover:scale-105" />
 
-        <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-950 font-sans mb-4">
-          Pronto para falar qualquer idioma nas suas chamadas?
+        <h2 className="text-3xl sm:text-5xl font-medium tracking-tight text-slate-900 font-sans mb-8">
+          Pronto para falar qualquer idioma?
         </h2>
-        <p className="max-w-2xl mx-auto text-base sm:text-lg text-slate-600 mb-10">
-          Baixe o Parrot hoje mesmo. Sem assinaturas obrigatórias para começar, sem bots invadindo reuniões
-          e com instalação nativa em menos de 1 minuto.
-        </p>
 
         {/* Primary Download Button */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">

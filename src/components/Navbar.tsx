@@ -39,7 +39,7 @@ export const Navbar: React.FC = () => {
           <a href="#simulator" className="hover:text-slate-900 transition-colors cursor-pointer">
             Simulador
           </a>
-          <a href="#architecture" className="hover:text-slate-900 transition-colors cursor-pointer">
+          <a href="#features" className="hover:text-slate-900 transition-colors cursor-pointer">
             CoreAudio Driver
           </a>
           <a href="#compare" className="hover:text-slate-900 transition-colors cursor-pointer">

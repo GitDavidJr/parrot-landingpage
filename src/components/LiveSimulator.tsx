@@ -1,225 +1,188 @@
-import React, { useState } from 'react';
-import { Play, Volume2, ArrowRightLeft, Sparkles, Check, Mic, Activity } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Play, Pause, Volume2, ArrowRight } from 'lucide-react';
 
-interface PresetPhrase {
-  fromLang: string;
-  toLang: string;
-  fromFlag: string;
-  toFlag: string;
-  fromText: string;
-  toText: string;
-  latency: number;
-  tag: string;
+interface SimulatorScenario {
+  id: string;
+  sourceLang: string;
+  targetLang: string;
+  label: string;
+  sourceText: string;
+  translatedText: string;
+  targetLocale: string;
 }
 
-const PRESET_PHRASES: PresetPhrase[] = [
+const SCENARIOS: SimulatorScenario[] = [
   {
-    fromLang: 'en-US',
-    toLang: 'pt-BR',
-    fromFlag: '🇺🇸',
-    toFlag: '🇧🇷',
-    fromText: 'Could you walk me through your CoreAudio driver architecture and latency benchmarks?',
-    toText: 'Você poderia me explicar a arquitetura do driver CoreAudio e os testes de latência?',
-    latency: 168,
-    tag: 'Engenharia / Tech Sync'
+    id: 'en-pt',
+    sourceLang: 'Inglês',
+    targetLang: 'Português',
+    label: 'Inglês ➔ Português',
+    sourceText: 'Could you walk me through your CoreAudio driver architecture and latency benchmarks?',
+    translatedText: 'Você poderia me explicar a arquitetura do driver CoreAudio e os testes de latência?',
+    targetLocale: 'pt-BR'
   },
   {
-    fromLang: 'pt-BR',
-    toLang: 'en-US',
-    fromFlag: '🇧🇷',
-    toFlag: '🇺🇸',
-    fromText: 'Fechamos o contrato trimestral com o cliente da Europa e começamos o deploy hoje.',
-    toText: 'We closed the quarterly contract with the European client and start the deployment today.',
-    latency: 182,
-    tag: 'Executivo / Negócios'
+    id: 'pt-en',
+    sourceLang: 'Português',
+    targetLang: 'Inglês',
+    label: 'Português ➔ Inglês',
+    sourceText: 'O driver virtual opera diretamente no kernel do macOS, isolando o microfone da saída da chamada.',
+    translatedText: 'The virtual driver operates directly in the macOS kernel, isolating the microphone from the call output.',
+    targetLocale: 'en-US'
   },
   {
-    fromLang: 'es-ES',
-    toLang: 'pt-BR',
-    fromFlag: '🇪🇸',
-    toFlag: '🇧🇷',
-    fromText: 'Nuestra prioridad para este trimestre es la integración de pagos sin fricción.',
-    toText: 'Nossa prioridade para este trimestre é a integração de pagamentos sem atrito.',
-    latency: 174,
-    tag: 'Produto / Latam'
-  },
-  {
-    fromLang: 'en-US',
-    toLang: 'pt-BR',
-    fromFlag: '🇺🇸',
-    toFlag: '🇧🇷',
-    fromText: 'Does Parrot isolate sound so meeting attendees don’t hear double audio?',
-    toText: 'O Parrot isola o som para que os participantes da reunião não escutem áudio duplicado?',
-    latency: 161,
-    tag: 'Suporte / Dúvida Técnica'
+    id: 'es-pt',
+    sourceLang: 'Espanhol',
+    targetLang: 'Português',
+    label: 'Espanhol ➔ Português',
+    sourceText: 'Nuestra prioridad para este trimestre es la traducción en tiempo real con cero interferencia.',
+    translatedText: 'Nossa prioridade para este trimestre é a tradução em tempo real com zero interferência.',
+    targetLocale: 'pt-BR'
   }
 ];
 
 export const LiveSimulator: React.FC = () => {
-  const [selectedIdx, setSelectedIdx] = useState(0);
-  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
-  const [isTranslating, setIsTranslating] = useState(false);
+  const [selectedId, setSelectedId] = useState('en-pt');
+  const [isPlaying, setIsPlaying] = useState(false);
+  const synthRef = useRef<SpeechSynthesis | null>(null);
 
-  const current = PRESET_PHRASES[selectedIdx];
+  const activeScenario = SCENARIOS.find((s) => s.id === selectedId) || SCENARIOS[0];
 
-  const handleSelectPreset = (idx: number) => {
-    setSelectedIdx(idx);
-    setIsTranslating(true);
-    setTimeout(() => {
-      setIsTranslating(false);
-    }, 180);
-  };
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      synthRef.current = window.speechSynthesis;
+    }
+  }, []);
 
-  const playSpeech = (text: string, lang: string) => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = lang;
+  const handlePlayAudio = () => {
+    if (!synthRef.current) return;
+
+    if (isPlaying) {
+      synthRef.current.cancel();
+      setIsPlaying(false);
+      return;
+    }
+
+    synthRef.current.cancel();
+    const utterance = new SpeechSynthesisUtterance(activeScenario.translatedText);
+    utterance.lang = activeScenario.targetLocale;
     utterance.rate = 1.0;
-    utterance.onstart = () => setIsPlayingAudio(true);
-    utterance.onend = () => setIsPlayingAudio(false);
-    utterance.onerror = () => setIsPlayingAudio(false);
-    window.speechSynthesis.speak(utterance);
+    utterance.pitch = 1.0;
+
+    utterance.onstart = () => setIsPlaying(true);
+    utterance.onend = () => setIsPlaying(false);
+    utterance.onerror = () => setIsPlaying(false);
+
+    synthRef.current.speak(utterance);
   };
 
   return (
-    <section id="simulator" className="py-20 bg-slate-100/60 border-y border-slate-200/80 relative">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="simulator" className="py-20 lg:py-32 bg-slate-50/50 border-t border-slate-200/60 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold border border-blue-200/80 mb-4">
-            <Activity className="w-3.5 h-3.5 text-blue-600" />
-            <span>Simulador Interativo do Motor Neural</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950 font-sans">
-            Experimente o motor de tradução agora.
-          </h2>
-          <p className="mt-3 text-base text-slate-600 font-normal">
-            Escolha um exemplo de reunião internacional e ouça a sintetização direta em áudio.
-          </p>
-        </div>
-
-        {/* Preset Selector Chips */}
-        <div className="flex flex-wrap items-center justify-center gap-2.5 mb-8">
-          {PRESET_PHRASES.map((preset, idx) => (
-            <button
-              key={idx}
-              onClick={() => handleSelectPreset(idx)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
-                selectedIdx === idx
-                  ? 'bg-slate-950 text-white shadow-md'
-                  : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200'
-              }`}
-            >
-              <span>{preset.fromFlag}</span>
-              <span>→</span>
-              <span>{preset.toFlag}</span>
-              <span className="text-slate-400">|</span>
-              <span>{preset.tag}</span>
-            </button>
-          ))}
-        </div>
-
-        {/* Interactive Translator Simulator Card */}
-        <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl border border-slate-200/90 overflow-hidden p-6 sm:p-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           
-          {/* Card Header Status */}
-          <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-100">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-lg">
-                🦜
-              </div>
-              <div>
-                <div className="font-bold text-slate-900 text-sm">Parrot Neural Translator</div>
-                <div className="text-xs text-slate-500">Pipeline Whisper Turbo + CoreAudio Bypass</div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-mono font-bold border border-emerald-200 flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span>Latência: {current.latency}ms</span>
-              </span>
-              <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold">
-                Isolamento: 100%
-              </span>
-            </div>
+          {/* Left: Typography & Copy */}
+          <div className="lg:col-span-5">
+            <h2 className="text-4xl sm:text-5xl font-medium tracking-tight text-slate-900 font-sans leading-[1.15] mb-6">
+              Simulador em Tempo Real
+            </h2>
+            <p className="text-base sm:text-lg text-slate-600 font-normal leading-relaxed">
+              Experimente a sintetização neural agora mesmo. Alterne os idiomas e reproduza o áudio
+              traduzido com entonação natural e latência de 180ms.
+            </p>
           </div>
 
-          {/* Dual Channel Live Display */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
-            
-            {/* Input Channel (What was said) */}
-            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-                    <Mic className="w-3.5 h-3.5 text-slate-400" />
-                    <span>Áudio de Entrada [{current.fromFlag}]</span>
-                  </span>
-                  <button
-                    onClick={() => playSpeech(current.fromText, current.fromLang)}
-                    className="p-1.5 rounded-lg hover:bg-slate-200 text-slate-600 transition-colors cursor-pointer"
-                    title="Ouvir áudio original"
-                  >
-                    <Volume2 className="w-4 h-4" />
-                  </button>
-                </div>
-                <p className="text-slate-800 text-base sm:text-lg font-medium leading-relaxed italic">
-                  "{current.fromText}"
-                </p>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-slate-200/60 flex items-center justify-between text-xs text-slate-500">
-                <span>Captura: Driver Virtual</span>
-                <span className="font-mono text-emerald-600 font-semibold">● 48kHz Stereo</span>
-              </div>
-            </div>
-
-            {/* Output Channel (What the caller hears) */}
-            <div className="p-5 rounded-2xl bg-emerald-50/40 border border-emerald-200/80 flex flex-col justify-between relative overflow-hidden">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>Tradução Neural [{current.toFlag}]</span>
-                  </span>
-                  <button
-                    onClick={() => playSpeech(current.toText, current.toLang)}
-                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition-colors shadow-xs cursor-pointer"
-                  >
-                    <Volume2 className="w-3.5 h-3.5" />
-                    <span>Ouvir Voz</span>
-                  </button>
+          {/* Right: Antigravity Interactive Prompt Window */}
+          <div className="lg:col-span-7">
+            <div className="p-6 sm:p-10 rounded-[36px] bg-gradient-to-br from-emerald-200/30 via-slate-100/50 to-blue-200/30 border border-slate-200/80 shadow-2xl relative overflow-hidden flex items-center justify-center">
+              
+              {/* Elevated Interactive Card */}
+              <div className="w-full bg-white rounded-2xl shadow-xl border border-slate-200/80 p-6 sm:p-8 relative z-10">
+                
+                {/* Clean Language Switcher Pills */}
+                <div className="flex items-center gap-2 pb-6 border-b border-slate-100 mb-6 overflow-x-auto">
+                  {SCENARIOS.map((scenario) => {
+                    const active = scenario.id === selectedId;
+                    return (
+                      <button
+                        key={scenario.id}
+                        onClick={() => {
+                          if (isPlaying && synthRef.current) synthRef.current.cancel();
+                          setIsPlaying(false);
+                          setSelectedId(scenario.id);
+                        }}
+                        className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
+                          active
+                            ? 'bg-slate-950 text-white shadow-sm'
+                            : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                        }`}
+                      >
+                        {scenario.label}
+                      </button>
+                    );
+                  })}
                 </div>
 
-                <p className={`text-slate-950 text-base sm:text-lg font-bold leading-relaxed transition-opacity ${isTranslating ? 'opacity-30' : 'opacity-100'}`}>
-                  "{current.toText}"
-                </p>
+                {/* Speech Input */}
+                <div className="mb-5">
+                  <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400 font-bold mb-2">
+                    Fala Original ({activeScenario.sourceLang})
+                  </div>
+                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-800 font-medium leading-relaxed">
+                    "{activeScenario.sourceText}"
+                  </div>
+                </div>
+
+                {/* Translation Output Card */}
+                <div className="p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 mb-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="text-[11px] font-mono uppercase tracking-wider text-emerald-800 font-bold">
+                      Tradução por Voz ({activeScenario.targetLang})
+                    </div>
+                    <span className="text-[11px] font-mono text-emerald-700 font-bold">180ms</span>
+                  </div>
+                  
+                  <div className="text-base font-semibold text-emerald-950 leading-relaxed mb-4">
+                    "{activeScenario.translatedText}"
+                  </div>
+
+                  {/* Audio Playback Bar */}
+                  <div className="flex items-center justify-between pt-3 border-t border-emerald-200/60">
+                    <button
+                      onClick={handlePlayAudio}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition-all shadow-xs cursor-pointer"
+                    >
+                      {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
+                      <span>{isPlaying ? 'Pausar Áudio' : 'Ouvir Tradução por Voz'}</span>
+                    </button>
+
+                    {/* Animated Wave Indicator */}
+                    <div className="flex items-center gap-1 h-3">
+                      {[40, 80, 50, 100, 60, 90, 45, 75].map((h, i) => (
+                        <div
+                          key={i}
+                          className={`w-1 rounded-full transition-all duration-200 ${
+                            isPlaying ? 'bg-emerald-600 animate-pulse' : 'bg-emerald-300'
+                          }`}
+                          style={{
+                            height: isPlaying ? `${Math.max(30, h)}%` : '30%'
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer status */}
+                <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
+                  <span>Pipeline Whisper Streaming</span>
+                  <span className="text-emerald-600 font-bold">● Áudio Cristalino</span>
+                </div>
+
               </div>
 
-              <div className="mt-4 pt-3 border-t border-emerald-200/60 flex items-center justify-between text-xs text-emerald-900 font-medium">
-                <span>Saída: Fone / Alto-falante</span>
-                <span className="font-mono text-emerald-700 font-semibold">● Sincronizado ({current.latency}ms)</span>
-              </div>
             </div>
-
-          </div>
-
-          {/* Test Action Bar */}
-          <div className="mt-6 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
-            <div className="text-xs text-slate-500">
-              Clique em <strong>"Ouvir Voz"</strong> para testar a voz sintetizada pelo seu próprio navegador.
-            </div>
-
-            <button
-              onClick={() => playSpeech(current.toText, current.toLang)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs sm:text-sm transition-all shadow-sm cursor-pointer"
-            >
-              <Play className="w-3.5 h-3.5 fill-current" />
-              <span>Reproduzir Tradução com Áudio</span>
-            </button>
           </div>
 
         </div>

@@ -67,17 +67,10 @@ export const ComparisonTable: React.FC = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200 mb-4">
-            <span>Comparativo Técnico</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-950 font-sans">
-            Por que o Parrot é diferente de tudo o que existe.
+        <div className="text-center max-w-3xl mx-auto mb-14">
+          <h2 className="text-3xl sm:text-5xl font-medium tracking-tight text-slate-900 font-sans">
+            Por que o Parrot é diferente
           </h2>
-          <p className="mt-3 text-base text-slate-600 font-normal">
-            A maioria das ferramentas tenta colocar um robô invasivo na reunião ou apenas gera legendas lentas.
-            O Parrot foi desenhado para conversação oral fluente.
-          </p>
         </div>
 
         {/* Table Container */}
