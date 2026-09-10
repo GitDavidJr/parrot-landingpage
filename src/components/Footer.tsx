@@ -1,0 +1,47 @@
+import React from 'react';
+import { Heart } from 'lucide-react';
+import { GithubIcon } from './GithubIcon';
+
+export const Footer: React.FC = () => {
+  return (
+    <footer className="bg-white border-t border-slate-200 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+        
+        {/* Brand */}
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg overflow-hidden border border-slate-200 p-0.5">
+            <img src="/assets/icon.png" alt="Parrot Logo" className="w-full h-full object-contain" />
+          </div>
+          <span className="font-bold text-slate-900 text-sm">Parrot</span>
+          <span className="text-xs text-slate-400">|</span>
+          <span className="text-xs text-slate-500">
+            © {new Date().getFullYear()} Parrot Project. Código aberto sob licença MIT.
+          </span>
+        </div>
+
+        {/* Navigation / Links */}
+        <div className="flex items-center gap-6 text-xs text-slate-600">
+          <a href="#showcase" className="hover:text-slate-900 transition-colors cursor-pointer">
+            Reunião em Vídeo
+          </a>
+          <a href="#simulator" className="hover:text-slate-900 transition-colors cursor-pointer">
+            Simulador
+          </a>
+          <a href="#architecture" className="hover:text-slate-900 transition-colors cursor-pointer">
+            CoreAudio Driver
+          </a>
+          <a
+            href="https://github.com/davidjunior/parrot"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-1.5 hover:text-slate-900 transition-colors cursor-pointer"
+          >
+            <GithubIcon className="w-3.5 h-3.5" />
+            <span>Repositório GitHub</span>
+          </a>
+        </div>
+
+      </div>
+    </footer>
+  );
+};
