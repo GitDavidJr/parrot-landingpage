@@ -12,9 +12,9 @@ export interface PlatformInfo {
 export function usePlatform(): PlatformInfo {
   const [platform, setPlatform] = useState<PlatformInfo>({
     os: 'mac-arm',
-    label: 'Baixar para Mac',
+    label: 'Baixar para Mac (Apple Silicon)',
     osName: 'macOS (Apple Silicon)',
-    badge: 'M1 / M2 / M3 / M4 • Universal',
+    badge: 'M1 / M2 / M3 / M4',
     fileName: 'Parrot-macOS.dmg',
     downloadUrl: 'https://github.com/davidjunior/parrot/releases/latest/download/Parrot-macOS.dmg'
   });
@@ -35,28 +35,15 @@ export function usePlatform(): PlatformInfo {
         downloadUrl: 'https://github.com/davidjunior/parrot/releases/latest/download/Parrot-Windows-x64.zip'
       });
     } else if (userAgent.includes('mac') || platformStr.includes('mac')) {
-      // Check for Apple Silicon vs Intel
-      const isIntel = userAgent.includes('intel') && !window.navigator.maxTouchPoints;
-      const hasChrome = 'chrome' in window;
-      if (isIntel && !hasChrome) {
-        setPlatform({
-          os: 'mac-intel',
-          label: 'Baixar para Mac (Intel)',
-          osName: 'macOS Intel',
-          badge: 'x86_64 • macOS 13+',
-          fileName: 'Parrot-macOS.dmg',
-          downloadUrl: 'https://github.com/davidjunior/parrot/releases/latest/download/Parrot-macOS.dmg'
-        });
-      } else {
-        setPlatform({
-          os: 'mac-arm',
-          label: 'Baixar para Mac',
-          osName: 'macOS (Apple Silicon)',
-          badge: 'M1 / M2 / M3 / M4 • Universal',
-          fileName: 'Parrot-macOS.dmg',
-          downloadUrl: 'https://github.com/davidjunior/parrot/releases/latest/download/Parrot-macOS.dmg'
-        });
-      }
+      // Default to Apple Silicon as modern standard (M1-M4)
+      setPlatform({
+        os: 'mac-arm',
+        label: 'Baixar para Mac (Apple Silicon)',
+        osName: 'macOS (Apple Silicon)',
+        badge: 'M1 / M2 / M3 / M4',
+        fileName: 'Parrot-macOS.dmg',
+        downloadUrl: 'https://github.com/davidjunior/parrot/releases/latest/download/Parrot-macOS.dmg'
+      });
     } else if (userAgent.includes('linux')) {
       setPlatform({
         os: 'linux',

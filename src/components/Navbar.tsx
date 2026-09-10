@@ -26,16 +26,9 @@ export const Navbar: React.FC = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Logo & Brand */}
-        <a href="#" className="flex items-center gap-3 group cursor-pointer">
-          <div className="w-10 h-10 rounded-xl overflow-hidden shadow-sm border border-slate-200 group-hover:scale-105 transition-transform bg-white flex items-center justify-center p-0.5">
-            <img src="/assets/icon.png" alt="Parrot Logo" className="w-full h-full object-contain" />
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-bold tracking-tight text-slate-900 font-sans">Parrot</span>
-            <span className="px-2 py-0.5 text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60 rounded-full">
-              v2.0
-            </span>
-          </div>
+        <a href="#" className="flex items-center gap-2.5 group cursor-pointer">
+          <img src="/assets/icon.png" alt="Parrot" className="w-8 h-8 object-contain transition-transform group-hover:scale-105" />
+          <span className="text-xl font-bold tracking-tight text-slate-900 font-sans">Parrot</span>
         </a>
 
         {/* Center Nav Links */}

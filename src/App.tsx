@@ -1,5 +1,4 @@
 import React from 'react';
-import { AntigravityCanvas } from './components/AntigravityCanvas';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { ScrollShowcase } from './components/ScrollShowcase';
@@ -12,10 +11,7 @@ import { Footer } from './components/Footer';
 
 export function App() {
   return (
-    <div className="relative min-h-screen bg-[#fafafa] text-slate-900 font-sans selection:bg-emerald-500/20 selection:text-emerald-950 overflow-x-hidden">
-      {/* Background Interactive Antigravity Canvas */}
-      <AntigravityCanvas />
-
+    <div className="relative min-h-screen bg-white text-slate-900 font-sans selection:bg-emerald-500/20 selection:text-emerald-950 overflow-x-hidden">
       {/* Main Layout Elements */}
       <Navbar />
 
