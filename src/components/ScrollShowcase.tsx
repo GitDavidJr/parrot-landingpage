@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Mic, Video, Share2, PhoneOff, UserCheck, Shield } from 'lucide-react';
+import { ParrotLogo } from './ParrotLogo';
 
 interface ChatMessage {
   id: string;
@@ -65,8 +66,10 @@ export const ScrollShowcase: React.FC = () => {
       progress = Math.max(0, Math.min(1, progress));
       setScrollProgress(progress);
 
-      // In view detection
-      if (rect.top < windowH * 0.8 && rect.bottom > 100) {
+      // In view detection: requires the user to scroll past the top hero
+      // so the sequence and video play strictly AFTER scrolling down
+      const hasScrolled = window.scrollY > 40;
+      if (hasScrolled && rect.top < windowH * 0.70 && rect.bottom > 100) {
         if (!isInView) setIsInView(true);
       }
     };
@@ -220,7 +223,6 @@ export const ScrollShowcase: React.FC = () => {
                 <video
                   ref={sarahVideoRef}
                   src="/videos/sarah-stream.mp4"
-                  autoPlay
                   loop
                   muted
                   playsInline
@@ -233,7 +235,6 @@ export const ScrollShowcase: React.FC = () => {
                 <video
                   ref={davidVideoRef}
                   src="/videos/david-stream.mp4"
-                  autoPlay
                   loop
                   muted
                   playsInline
@@ -264,10 +265,8 @@ export const ScrollShowcase: React.FC = () => {
             {/* Right: Dedicated WhatsApp-Style Stacked Translation Chat Stream */}
             <div className="w-full lg:w-[35%] max-w-[420px] flex flex-col items-center justify-end h-full">
               
-              {/* Clean Single Centered Parrot Logo Squircle */}
-              <div className="w-11 h-11 rounded-2xl bg-white shadow-md border border-slate-200/50 flex items-center justify-center p-2 mb-4 shrink-0">
-                <img src="/assets/icon-flat.svg" alt="Parrot" className="w-full h-full object-contain" />
-              </div>
+              {/* Clean Single Centered Parrot Logo */}
+              <ParrotLogo className="w-11 h-11 mb-4 shrink-0 drop-shadow-md" />
 
               {/* Stacked Chat Feed */}
               <div

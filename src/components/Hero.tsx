@@ -6,8 +6,8 @@ export const Hero: React.FC = () => {
   const platform = usePlatform();
 
   return (
-    <section className="relative pt-32 pb-10 sm:pt-36 sm:pb-14 overflow-hidden">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+    <section className="relative min-h-[85vh] sm:min-h-[90vh] flex flex-col justify-center items-center pt-28 pb-16 sm:pt-32 sm:pb-20 overflow-hidden">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 w-full">
         {/* Clean, Direct Headline */}
         <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-slate-900 font-sans leading-[1.1] mb-8">
           Fale no seu idioma.{' '}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { usePlatform } from '../utils/usePlatform';
 import { Download, ChevronDown, Check, Apple, Monitor } from 'lucide-react';
 import { GithubIcon } from './GithubIcon';
+import { ParrotLogo } from './ParrotLogo';
 
 export const Navbar: React.FC = () => {
   const platform = usePlatform();
@@ -27,7 +28,7 @@ export const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Logo & Brand */}
         <a href="#" className="flex items-center gap-2.5 group cursor-pointer">
-          <img src="/assets/icon.png" alt="Parrot" className="w-8 h-8 object-contain transition-transform group-hover:scale-105" />
+          <ParrotLogo className="w-8 h-8 transition-transform group-hover:scale-105 drop-shadow-xs" />
           <span className="text-xl font-bold tracking-tight text-slate-900 font-sans">Parrot</span>
         </a>
 

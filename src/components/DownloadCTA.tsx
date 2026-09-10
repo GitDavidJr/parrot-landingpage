@@ -1,6 +1,7 @@
 import { usePlatform } from '../utils/usePlatform';
 import { Download, Apple, Monitor, Terminal, CheckCircle2 } from 'lucide-react';
 import { GithubIcon } from './GithubIcon';
+import { ParrotLogo } from './ParrotLogo';
 
 export const DownloadCTA: React.FC = () => {
   const platform = usePlatform();
@@ -10,7 +11,7 @@ export const DownloadCTA: React.FC = () => {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         
         {/* Raw Parrot Icon */}
-        <img src="/assets/icon.png" alt="Parrot" className="w-16 h-16 object-contain mx-auto mb-6 transition-transform hover:scale-105" />
+        <ParrotLogo className="w-16 h-16 mx-auto mb-6 transition-transform hover:scale-105 drop-shadow-md" />
 
         <h2 className="text-3xl sm:text-5xl font-medium tracking-tight text-slate-900 font-sans mb-8">
           Pronto para falar qualquer idioma?

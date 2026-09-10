@@ -1,6 +1,7 @@
 import React from 'react';
 import { Heart } from 'lucide-react';
 import { GithubIcon } from './GithubIcon';
+import { ParrotLogo } from './ParrotLogo';
 
 export const Footer: React.FC = () => {
   return (
@@ -9,9 +10,7 @@ export const Footer: React.FC = () => {
         
         {/* Brand */}
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg overflow-hidden border border-slate-200 p-0.5">
-            <img src="/assets/icon.png" alt="Parrot Logo" className="w-full h-full object-contain" />
-          </div>
+          <ParrotLogo className="w-8 h-8 drop-shadow-xs" />
           <span className="font-bold text-slate-900 text-sm">Parrot</span>
           <span className="text-xs text-slate-400">|</span>
           <span className="text-xs text-slate-500">
