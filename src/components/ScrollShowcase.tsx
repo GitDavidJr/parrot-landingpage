@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Mic, Video, Share2, PhoneOff, UserCheck, Shield } from 'lucide-react';
+import { Mic, Video, Share2, PhoneOff, UserCheck } from 'lucide-react';
 import { ParrotLogo } from './ParrotLogo';
 
 interface ChatMessage {
@@ -45,9 +45,10 @@ export const ScrollShowcase: React.FC = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isInView, setIsInView] = useState(false);
 
-  // Animation states
+  // Animation states: both join sequentially
+  const [davidJoined, setDavidJoined] = useState(false);
   const [sarahJoined, setSarahJoined] = useState(false);
-  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
   // Track scroll expansion
@@ -87,67 +88,75 @@ export const ScrollShowcase: React.FC = () => {
 
     const startSequence = () => {
       // Step 0: Reset
+      setDavidJoined(false);
       setSarahJoined(false);
-      setShowToast(false);
+      setToastMessage(null);
       setMessages([]);
 
-      if (davidVideoRef.current) {
-        davidVideoRef.current.currentTime = 0;
-        davidVideoRef.current.play().catch(() => {});
-      }
-
-      // Step 1: Sarah joins at 1.2s
+      // Step 1: David enters first at 600ms
       timers.push(
         setTimeout(() => {
-          setShowToast(true);
+          setDavidJoined(true);
+          setToastMessage('David conectou na chamada');
+          if (davidVideoRef.current) {
+            davidVideoRef.current.currentTime = 0;
+            davidVideoRef.current.play().catch(() => {});
+          }
+        }, 600)
+      );
+
+      // Step 2: Sarah joins second at 2400ms
+      timers.push(
+        setTimeout(() => {
           setSarahJoined(true);
+          setToastMessage('Sarah Jenkins conectou na chamada');
           if (sarahVideoRef.current) {
             sarahVideoRef.current.currentTime = 0;
             sarahVideoRef.current.play().catch(() => {});
           }
-        }, 1200)
+        }, 2400)
       );
 
-      // Hide toast at 4.0s
+      // Hide toast at 4500ms
       timers.push(
         setTimeout(() => {
-          setShowToast(false);
-        }, 4000)
+          setToastMessage(null);
+        }, 4500)
       );
 
-      // Step 2: Sarah message 1 at 3.5s
+      // Step 3: Sarah message 1 at 5.5s
       timers.push(
         setTimeout(() => {
           setMessages((prev) => [...prev, ALL_MESSAGES[0]]);
-        }, 3500)
+        }, 5500)
       );
 
-      // Step 3: David message 1 at 8.5s
+      // Step 4: David message 1 at 12s
       timers.push(
         setTimeout(() => {
           setMessages((prev) => [...prev, ALL_MESSAGES[1]]);
-        }, 8500)
+        }, 12000)
       );
 
-      // Step 4: Sarah message 2 at 14.5s
+      // Step 5: Sarah message 2 at 19s
       timers.push(
         setTimeout(() => {
           setMessages((prev) => [...prev, ALL_MESSAGES[2]]);
-        }, 14500)
+        }, 19000)
       );
 
-      // Step 5: David message 2 at 20.5s
+      // Step 6: David message 2 at 26s
       timers.push(
         setTimeout(() => {
           setMessages((prev) => [...prev, ALL_MESSAGES[3]]);
-        }, 20500)
+        }, 26000)
       );
 
-      // Step 6: Loop after 30s
+      // Step 7: Loop after 38s
       timers.push(
         setTimeout(() => {
           startSequence();
-        }, 30000)
+        }, 38000)
       );
     };
 
@@ -184,35 +193,43 @@ export const ScrollShowcase: React.FC = () => {
             borderRadius: `${borderRadius}px`,
           }}
         >
-          {/* Top Status Bar */}
+          {/* Top Status Bar - Clean and minimal, CoreAudio/Shield badge removed */}
           <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between text-xs text-slate-400 font-mono">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-slate-300 font-semibold">
-                {sarahJoined ? 'Chamada Ativa • 2 participantes' : 'Conectado na sala • 1 participante'}
+              <span
+                className={`w-2 h-2 rounded-full transition-colors ${
+                  sarahJoined
+                    ? 'bg-emerald-400 animate-pulse'
+                    : davidJoined
+                    ? 'bg-emerald-400/80 animate-pulse'
+                    : 'bg-slate-600'
+                }`}
+              />
+              <span className="text-slate-300 font-medium">
+                {sarahJoined
+                  ? 'Chamada Ativa • 2 participantes'
+                  : davidJoined
+                  ? 'Conectado na sala • 1 participante'
+                  : 'Aguardando participantes...'}
               </span>
-            </div>
-            <div className="flex items-center gap-1.5 text-slate-400">
-              <Shield className="w-3.5 h-3.5 text-emerald-400" />
-              <span>CoreAudio Virtual Tap • Zero Bots</span>
             </div>
           </div>
 
           {/* Main Visual Stage */}
-          <div className="relative min-h-[520px] lg:h-[620px] p-6 lg:p-10 flex flex-col lg:flex-row items-center justify-between gap-8">
+          <div className="relative min-h-[560px] lg:h-[640px] p-6 lg:p-8 flex flex-col lg:flex-row items-stretch justify-between gap-8">
             
-            {/* Left/Center: Video Participants Area */}
-            <div className="relative w-full lg:w-[62%] h-[380px] lg:h-full flex items-center justify-center">
+            {/* Left: Video Participants Area */}
+            <div className="relative w-full lg:w-[60%] h-[400px] lg:h-full flex items-center justify-center">
               
               {/* Join Toast */}
-              {showToast && (
-                <div className="absolute top-2 z-30 px-4 py-2 rounded-full bg-black/80 backdrop-blur-md text-white text-xs font-semibold border border-white/10 shadow-xl flex items-center gap-2 animate-in fade-in slide-in-from-top-3 duration-300">
+              {toastMessage && (
+                <div className="absolute top-2 z-30 px-4 py-2 rounded-full bg-black/85 backdrop-blur-md text-white text-xs font-semibold border border-white/10 shadow-xl flex items-center gap-2 animate-in fade-in slide-in-from-top-3 duration-300">
                   <UserCheck className="w-4 h-4 text-emerald-400" />
-                  <span>Sarah Jenkins conectou na chamada</span>
+                  <span>{toastMessage}</span>
                 </div>
               )}
 
-              {/* Tile 1: Sarah (Top Left) */}
+              {/* Tile 1: Sarah (Top Left) - joins second */}
               <div
                 className={`absolute left-0 top-0 w-[62%] sm:w-[54%] max-w-[420px] aspect-[4/3] rounded-2xl overflow-hidden border border-white/10 shadow-2xl transition-all duration-700 ease-out z-10 ${
                   sarahJoined
@@ -230,8 +247,14 @@ export const ScrollShowcase: React.FC = () => {
                 />
               </div>
 
-              {/* Tile 2: David (Bottom Center / Right) */}
-              <div className="absolute right-4 bottom-8 sm:right-10 sm:bottom-10 w-[62%] sm:w-[54%] max-w-[420px] aspect-[4/3] rounded-2xl overflow-hidden border border-white/10 shadow-2xl z-20">
+              {/* Tile 2: David (Bottom Center / Right) - enters first */}
+              <div
+                className={`absolute right-4 bottom-8 sm:right-10 sm:bottom-10 w-[62%] sm:w-[54%] max-w-[420px] aspect-[4/3] rounded-2xl overflow-hidden border border-white/10 shadow-2xl z-20 transition-all duration-700 ease-out ${
+                  davidJoined
+                    ? 'opacity-100 scale-100 translate-y-0'
+                    : 'opacity-0 scale-90 translate-y-4 pointer-events-none'
+                }`}
+              >
                 <video
                   ref={davidVideoRef}
                   src="/videos/david-stream.mp4"
@@ -262,19 +285,21 @@ export const ScrollShowcase: React.FC = () => {
 
             </div>
 
-            {/* Right: Dedicated WhatsApp-Style Stacked Translation Chat Stream */}
-            <div className="w-full lg:w-[35%] max-w-[420px] flex flex-col items-center justify-end h-full">
+            {/* Right: Full-Height Dedicated WhatsApp-Style Stacked Translation Chat Stream */}
+            <div className="w-full lg:w-[38%] flex flex-col h-[500px] lg:h-full">
               
-              {/* Clean Single Centered Parrot Logo */}
-              <ParrotLogo className="w-11 h-11 mb-4 shrink-0 drop-shadow-md" />
+              {/* Clean Single Centered Parrot Logo positioned cleanly at the top */}
+              <div className="flex items-center justify-center pt-1 pb-4 shrink-0">
+                <ParrotLogo className="w-10 h-10 drop-shadow-md" />
+              </div>
 
-              {/* Stacked Chat Feed */}
+              {/* Full-Height Stacked Chat Feed without scrollbar */}
               <div
                 ref={chatScrollRef}
-                className="w-full h-[400px] flex flex-col gap-3 justify-end overflow-y-auto px-1 py-2"
+                className="flex-1 w-full flex flex-col gap-3 justify-end overflow-y-auto px-1 py-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
                 style={{
-                  maskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)',
-                  WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 15%)'
+                  maskImage: 'linear-gradient(to bottom, transparent 0%, black 12%)',
+                  WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 12%)'
                 }}
               >
                 {messages.length === 0 && (
