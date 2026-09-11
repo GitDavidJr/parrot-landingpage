@@ -26,7 +26,7 @@ const COMPARISONS: Row[] = [
   },
   {
     feature: 'Latência do Pipeline',
-    parrot: 'Sub-200ms',
+    parrot: 'Streaming em tempo real',
     bots: '1.5s - 3s',
     captions: '1s - 2s',
     hardware: '2s - 4s'

@@ -12,7 +12,7 @@ export const FeatureShowcase: React.FC = () => {
   }, []);
 
   return (
-    <section id="features" className="py-20 lg:py-32 bg-white relative overflow-hidden">
+    <section id="features" className="pt-12 sm:pt-16 pb-20 lg:pt-20 lg:pb-32 bg-white relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 lg:space-y-32">
 
         {/* ============================================================ */}
@@ -27,7 +27,7 @@ export const FeatureShowcase: React.FC = () => {
             </h2>
             <p className="text-base sm:text-lg text-slate-600 font-normal leading-relaxed">
               Isolamento bidirecional direto no nível do sistema operacional. O microfone e o áudio da chamada
-              rodam em canais de memória separados — eliminando ecos, loopbacks e garantindo 180ms de latência.
+              rodam em canais separados — reduzindo eco e retorno sem exigir um bot dentro da reunião.
             </p>
           </div>
 
@@ -110,7 +110,7 @@ export const FeatureShowcase: React.FC = () => {
                   <Check className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Filtro de Loopback: Zero Eco</span>
                 </div>
-                <div className="text-slate-700 font-bold">180ms Latência</div>
+                <div className="text-slate-700 font-bold">Pipeline em streaming</div>
               </div>
 
             </div>

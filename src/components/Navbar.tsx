@@ -1,17 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { usePlatform } from '../utils/usePlatform';
-import { Download, ChevronDown, Check, Apple, Monitor } from 'lucide-react';
+import { ChevronDown, Check } from 'lucide-react';
 import { GithubIcon } from './GithubIcon';
 import { ParrotLogo } from './ParrotLogo';
+import { PlatformBrandIcon } from './PlatformBrandIcon';
 
 export const Navbar: React.FC = () => {
   const platform = usePlatform();
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
+    let lastScrollY = window.scrollY;
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
+      const delta = window.scrollY - lastScrollY;
+      if (window.scrollY > 120 && delta > 3) setHidden(true);
+      if (delta < -3 || window.scrollY < 40) setHidden(false);
+      lastScrollY = window.scrollY;
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -19,7 +26,7 @@ export const Navbar: React.FC = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${hidden ? '-translate-y-full opacity-0 pointer-events-none' : ''} ${
         scrolled
           ? 'bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-sm py-3'
           : 'bg-transparent py-5'
@@ -33,18 +40,18 @@ export const Navbar: React.FC = () => {
         </a>
 
         {/* Center Nav Links */}
-        <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
+        <nav className="hidden lg:flex items-center gap-7 text-sm font-medium text-slate-600">
           <a href="#showcase" className="hover:text-slate-900 transition-colors cursor-pointer">
-            Reunião em Vídeo
-          </a>
-          <a href="#simulator" className="hover:text-slate-900 transition-colors cursor-pointer">
-            Simulador
+            Como funciona
           </a>
           <a href="#features" className="hover:text-slate-900 transition-colors cursor-pointer">
-            CoreAudio Driver
+            Tecnologia
           </a>
           <a href="#compare" className="hover:text-slate-900 transition-colors cursor-pointer">
             Comparativo
+          </a>
+          <a href="#support" className="hover:text-slate-900 transition-colors cursor-pointer">
+            Apoiadores
           </a>
           <a href="#faq" className="hover:text-slate-900 transition-colors cursor-pointer">
             Dúvidas
@@ -54,7 +61,7 @@ export const Navbar: React.FC = () => {
         {/* Right CTAs */}
         <div className="flex items-center gap-3 relative">
           <a
-            href="https://github.com/davidjunior/parrot"
+            href="https://github.com/GitDavidJr"
             target="_blank"
             rel="noreferrer"
             className="hidden sm:flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
@@ -70,12 +77,9 @@ export const Navbar: React.FC = () => {
                 href={platform.downloadUrl}
                 className="inline-flex items-center gap-2 bg-slate-950 hover:bg-slate-800 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-l-full transition-all cursor-pointer border-r border-slate-800"
               >
-                {platform.os.startsWith('mac') ? (
-                  <Apple className="w-4 h-4" />
-                ) : (
-                  <Monitor className="w-4 h-4" />
-                )}
-                <span>{platform.label}</span>
+                <PlatformBrandIcon platform={platform.os.startsWith('mac') ? 'apple' : 'windows'} className="w-4 h-4" />
+                <span className="hidden sm:inline">{platform.label}</span>
+                <span className="sm:hidden">{platform.os.startsWith('mac') ? 'Baixar para Mac' : 'Baixar para Windows'}</span>
               </a>
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -97,11 +101,11 @@ export const Navbar: React.FC = () => {
                 </div>
                 
                 <a
-                  href="https://github.com/davidjunior/parrot/releases/latest/download/Parrot-macOS.dmg"
+                  href="https://github.com/GitDavidJr/parrot/releases/latest/download/Parrot-macOS.dmg"
                   className="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-slate-50 transition-colors text-slate-800 text-sm cursor-pointer"
                 >
                   <div className="flex items-center gap-2.5">
-                    <Apple className="w-4 h-4 text-slate-700" />
+                    <PlatformBrandIcon platform="apple" className="w-4 h-4 text-slate-950" />
                     <div>
                       <div className="font-semibold text-xs">macOS (Apple Silicon M1-M4)</div>
                       <div className="text-[11px] text-slate-500">Universal .dmg • macOS 13+</div>
@@ -111,11 +115,11 @@ export const Navbar: React.FC = () => {
                 </a>
 
                 <a
-                  href="https://github.com/davidjunior/parrot/releases/latest/download/Parrot-macOS.dmg"
+                  href="https://github.com/GitDavidJr/parrot/releases/latest/download/Parrot-macOS.dmg"
                   className="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-slate-50 transition-colors text-slate-800 text-sm cursor-pointer"
                 >
                   <div className="flex items-center gap-2.5">
-                    <Apple className="w-4 h-4 text-slate-700" />
+                    <PlatformBrandIcon platform="apple" className="w-4 h-4 text-slate-950" />
                     <div>
                       <div className="font-semibold text-xs">macOS (Intel x86_64)</div>
                       <div className="text-[11px] text-slate-500">Universal .dmg • macOS 13+</div>
@@ -125,11 +129,11 @@ export const Navbar: React.FC = () => {
                 </a>
 
                 <a
-                  href="https://github.com/davidjunior/parrot/releases/latest/download/Parrot-Windows-x64.zip"
+                  href="https://github.com/GitDavidJr/parrot/releases/latest/download/Parrot-Windows-x64.zip"
                   className="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-slate-50 transition-colors text-slate-800 text-sm cursor-pointer"
                 >
                   <div className="flex items-center gap-2.5">
-                    <Monitor className="w-4 h-4 text-slate-700" />
+                    <PlatformBrandIcon platform="windows" className="w-4 h-4 text-[#0078d4]" />
                     <div>
                       <div className="font-semibold text-xs">Windows 10 / 11 (x64)</div>
                       <div className="text-[11px] text-slate-500">Instalador Direto (.zip / .exe)</div>
@@ -140,7 +144,7 @@ export const Navbar: React.FC = () => {
 
                 <div className="border-t border-slate-100 my-1 pt-1">
                   <a
-                    href="https://github.com/davidjunior/parrot/actions"
+                    href="https://github.com/GitDavidJr/parrot/actions"
                     target="_blank"
                     rel="noreferrer"
                     className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-colors cursor-pointer"

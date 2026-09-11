@@ -1,360 +1,221 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Mic, Video, Share2, PhoneOff, UserCheck } from 'lucide-react';
-import { ParrotLogo } from './ParrotLogo';
+import React, { useEffect, useRef, useState } from 'react';
+import { Mic, PhoneOff, Share2, Video } from 'lucide-react';
+import { PlatformBrandIcon } from './PlatformBrandIcon';
+import { usePlatform } from '../utils/usePlatform';
 
 interface ChatMessage {
   id: string;
-  sender: 'sarah' | 'david';
+  side: 'remote' | 'local';
   translatedText: string;
   originalText: string;
+  direction: string;
 }
 
 const ALL_MESSAGES: ChatMessage[] = [
   {
     id: 'msg-1',
-    sender: 'sarah',
-    translatedText: 'Oi David! Obrigado por entrar. Como está o lançamento do Parrot?',
-    originalText: 'Hey David! Thanks for joining. How is the Parrot launch looking?'
+    side: 'remote',
+    translatedText: 'Oi! Podemos revisar a proposta antes da reunião com o cliente?',
+    originalText: 'Hi! Can we review the proposal before the client meeting?',
+    direction: 'EN → PT'
   },
   {
     id: 'msg-2',
-    sender: 'david',
-    translatedText: 'Hey Sarah! The CoreAudio driver is running smoothly with zero echo.',
-    originalText: 'Fala Sarah! O driver CoreAudio tá rodando liso, com zero eco.'
+    side: 'local',
+    translatedText: 'Of course. I have already updated the timeline and the next steps.',
+    originalText: 'Claro. Já atualizei o cronograma e os próximos passos.',
+    direction: 'PT → EN'
   },
   {
     id: 'msg-3',
-    sender: 'sarah',
-    translatedText: 'Incrível! Nós dois podemos falar naturalmente nos nossos idiomas.',
-    originalText: 'Incredible! Both of us can speak naturally in our own languages.'
+    side: 'remote',
+    translatedText: 'Perfeito. Assim consigo apresentar tudo sem interromper a conversa.',
+    originalText: 'Perfect. That way I can present everything without interrupting the conversation.',
+    direction: 'EN → PT'
   },
   {
     id: 'msg-4',
-    sender: 'david',
-    translatedText: "Exactly! It's as if the language barrier simply didn't exist.",
-    originalText: 'Exato! É como se a barreira de idioma não existisse.'
+    side: 'local',
+    translatedText: "Great. I'll send the updated version right after our call.",
+    originalText: 'Ótimo. Envio a versão atualizada logo depois da nossa chamada.',
+    direction: 'PT → EN'
   }
 ];
 
+type SequencePhase = 'opening' | 'conversation' | 'cta';
+
 export const ScrollShowcase: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const sarahVideoRef = useRef<HTMLVideoElement | null>(null);
-  const davidVideoRef = useRef<HTMLVideoElement | null>(null);
-  const chatScrollRef = useRef<HTMLDivElement | null>(null);
-
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [isInView, setIsInView] = useState(false);
-
-  // Animation states: both join sequentially
-  const [davidJoined, setDavidJoined] = useState(false);
-  const [sarahJoined, setSarahJoined] = useState(false);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const platform = usePlatform();
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const firstVideoRef = useRef<HTMLVideoElement | null>(null);
+  const secondVideoRef = useRef<HTMLVideoElement | null>(null);
+  const [hasStarted, setHasStarted] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [phase, setPhase] = useState<SequencePhase>('opening');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
-  // Track scroll expansion
   useEffect(() => {
-    const handleScroll = () => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      const windowH = window.innerHeight;
+    const section = sectionRef.current;
+    if (!section) return;
 
-      // Expansion progression
-      const start = windowH * 0.95;
-      const end = windowH * 0.15;
-      const current = rect.top;
-
-      let progress = (start - current) / (start - end);
-      progress = Math.max(0, Math.min(1, progress));
-      setScrollProgress(progress);
-
-      // In view detection: requires the user to scroll past the top hero
-      // so the sequence and video play strictly AFTER scrolling down
-      const hasScrolled = window.scrollY > 40;
-      if (hasScrolled && rect.top < windowH * 0.70 && rect.bottom > 100) {
-        if (!isInView) setIsInView(true);
-      }
+    const updateProgress = () => {
+      const rect = section.getBoundingClientRect();
+      const viewport = window.innerHeight;
+      if (!isExpanded && rect.top <= viewport * 0.55 && rect.bottom >= viewport * 0.45) setIsExpanded(true);
+      if (isExpanded && (rect.top > viewport * 0.72 || rect.bottom < viewport * 0.05)) setIsExpanded(false);
+      if (rect.top < viewport * 0.8 && rect.bottom > viewport * 0.2) setHasStarted(true);
     };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isInView]);
-
-  // Sequence runner when in view
-  useEffect(() => {
-    if (!isInView) return;
-
-    let timers: ReturnType<typeof setTimeout>[] = [];
-
-    const startSequence = () => {
-      // Step 0: Reset
-      setDavidJoined(false);
-      setSarahJoined(false);
-      setToastMessage(null);
-      setMessages([]);
-
-      // Step 1: David enters first at 600ms
-      timers.push(
-        setTimeout(() => {
-          setDavidJoined(true);
-          setToastMessage('David conectou na chamada');
-          if (davidVideoRef.current) {
-            davidVideoRef.current.currentTime = 0;
-            davidVideoRef.current.play().catch(() => {});
-          }
-        }, 600)
-      );
-
-      // Step 2: Sarah joins second at 2400ms
-      timers.push(
-        setTimeout(() => {
-          setSarahJoined(true);
-          setToastMessage('Sarah Jenkins conectou na chamada');
-          if (sarahVideoRef.current) {
-            sarahVideoRef.current.currentTime = 0;
-            sarahVideoRef.current.play().catch(() => {});
-          }
-        }, 2400)
-      );
-
-      // Hide toast at 4500ms
-      timers.push(
-        setTimeout(() => {
-          setToastMessage(null);
-        }, 4500)
-      );
-
-      // Step 3: Sarah message 1 at 5.5s
-      timers.push(
-        setTimeout(() => {
-          setMessages((prev) => [...prev, ALL_MESSAGES[0]]);
-        }, 5500)
-      );
-
-      // Step 4: David message 1 at 12s
-      timers.push(
-        setTimeout(() => {
-          setMessages((prev) => [...prev, ALL_MESSAGES[1]]);
-        }, 12000)
-      );
-
-      // Step 5: Sarah message 2 at 19s
-      timers.push(
-        setTimeout(() => {
-          setMessages((prev) => [...prev, ALL_MESSAGES[2]]);
-        }, 19000)
-      );
-
-      // Step 6: David message 2 at 26s
-      timers.push(
-        setTimeout(() => {
-          setMessages((prev) => [...prev, ALL_MESSAGES[3]]);
-        }, 26000)
-      );
-
-      // Step 7: Loop after 38s
-      timers.push(
-        setTimeout(() => {
-          startSequence();
-        }, 38000)
-      );
-    };
-
-    startSequence();
-
+    updateProgress();
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    window.addEventListener('resize', updateProgress);
     return () => {
-      timers.forEach((t) => clearTimeout(t));
+      window.removeEventListener('scroll', updateProgress);
+      window.removeEventListener('resize', updateProgress);
     };
-  }, [isInView]);
+  }, [isExpanded]);
 
-  // Auto-scroll chat to bottom as new messages arrive
   useEffect(() => {
-    if (chatScrollRef.current) {
-      chatScrollRef.current.scrollTo({
-        top: chatScrollRef.current.scrollHeight,
-        behavior: 'smooth'
-      });
-    }
-  }, [messages]);
+    if (!hasStarted) return;
 
-  // Antigravity scroll expansion
-  const scale = 0.94 + scrollProgress * 0.06;
-  const borderRadius = 32 - scrollProgress * 14;
+    [firstVideoRef.current, secondVideoRef.current].forEach((video) => {
+      if (!video) return;
+      video.currentTime = 0;
+      void video.play().catch(() => undefined);
+    });
+
+    const timers = [
+      window.setTimeout(() => setPhase('conversation'), 4000),
+      window.setTimeout(() => setMessages([ALL_MESSAGES[0]]), 5300),
+      window.setTimeout(() => setMessages(ALL_MESSAGES.slice(0, 2)), 10300),
+      window.setTimeout(() => setMessages(ALL_MESSAGES.slice(0, 3)), 15300),
+      window.setTimeout(() => setMessages(ALL_MESSAGES), 20300),
+      window.setTimeout(() => setPhase('cta'), 25500)
+    ];
+
+    return () => timers.forEach((timer) => window.clearTimeout(timer));
+  }, [hasStarted]);
+
+  const isOpening = phase === 'opening';
 
   return (
-    <section id="showcase" ref={containerRef} className="py-8 sm:py-16 relative overflow-hidden">
+    <section id="showcase" ref={sectionRef} className={`showcase-section relative overflow-hidden scroll-mt-20 ${isExpanded ? 'showcase-section-expanded' : ''}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Seamless Motion Meeting Container */}
-        <div
-          className="transition-all duration-300 ease-out origin-center mx-auto relative shadow-2xl overflow-hidden bg-[#070a0f] border border-slate-800"
-          style={{
-            transform: `scale(${scale})`,
-            borderRadius: `${borderRadius}px`,
-          }}
-        >
-          {/* Top Status Bar - Clean and minimal, CoreAudio/Shield badge removed */}
-          <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between text-xs text-slate-400 font-mono">
+        <div className="showcase-shell relative overflow-hidden rounded-[26px] bg-[#070a0f] border border-slate-800 shadow-2xl">
+          <div className="h-12 px-5 sm:px-6 border-b border-white/[0.07] flex items-center justify-between text-[11px] sm:text-xs font-mono text-slate-400">
             <div className="flex items-center gap-2">
-              <span
-                className={`w-2 h-2 rounded-full transition-colors ${
-                  sarahJoined
-                    ? 'bg-emerald-400 animate-pulse'
-                    : davidJoined
-                    ? 'bg-emerald-400/80 animate-pulse'
-                    : 'bg-slate-600'
-                }`}
-              />
-              <span className="text-slate-300 font-medium">
-                {sarahJoined
-                  ? 'Chamada Ativa • 2 participantes'
-                  : davidJoined
-                  ? 'Conectado na sala • 1 participante'
-                  : 'Aguardando participantes...'}
-              </span>
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-slate-300">Chamada ativa · 2 participantes</span>
             </div>
           </div>
 
-          {/* Main Visual Stage */}
-          <div className="relative min-h-[560px] lg:h-[640px] p-6 lg:p-8 flex flex-col lg:flex-row items-stretch justify-between gap-8">
-            
-            {/* Left: Video Participants Area */}
-            <div className="relative w-full lg:w-[60%] h-[400px] lg:h-full flex items-center justify-center">
-              
-              {/* Join Toast */}
-              {toastMessage && (
-                <div className="absolute top-2 z-30 px-4 py-2 rounded-full bg-black/85 backdrop-blur-md text-white text-xs font-semibold border border-white/10 shadow-xl flex items-center gap-2 animate-in fade-in slide-in-from-top-3 duration-300">
-                  <UserCheck className="w-4 h-4 text-emerald-400" />
-                  <span>{toastMessage}</span>
+          <div className="showcase-stage relative h-[760px] lg:h-[640px] overflow-hidden" data-opening={isOpening}>
+            <div
+              className="showcase-participants"
+            >
+              <div
+                className="showcase-participant showcase-participant-first absolute aspect-[4/3] rounded-2xl overflow-hidden border border-white/10 bg-slate-900 shadow-2xl"
+              >
+                <video ref={firstVideoRef} muted playsInline preload="metadata" className="w-full h-full object-cover">
+                  <source src="/videos/maya-call.webm" type="video/webm" />
+                  <source src="/videos/maya-call.mp4" type="video/mp4" />
+                </video>
+                <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/70 to-transparent" />
+                <div className="absolute left-3 bottom-3 inline-flex items-center gap-2 rounded-lg bg-black/60 backdrop-blur px-2.5 py-1.5 text-[10px] sm:text-xs font-semibold text-white">
+                  <span className="px-1.5 py-0.5 rounded bg-blue-500 text-[9px]">EN</span>
+                  Maya · Product
                 </div>
-              )}
-
-              {/* Tile 1: Sarah (Top Left) - joins second */}
-              <div
-                className={`absolute left-0 top-0 w-[62%] sm:w-[54%] max-w-[420px] aspect-[4/3] rounded-2xl overflow-hidden border border-white/10 shadow-2xl transition-all duration-700 ease-out z-10 ${
-                  sarahJoined
-                    ? 'opacity-100 scale-100 translate-y-0'
-                    : 'opacity-0 scale-90 -translate-y-4 pointer-events-none'
-                }`}
-              >
-                <video
-                  ref={sarahVideoRef}
-                  src="/videos/sarah-stream.mp4"
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover"
-                />
               </div>
 
-              {/* Tile 2: David (Bottom Center / Right) - enters first */}
               <div
-                className={`absolute right-4 bottom-8 sm:right-10 sm:bottom-10 w-[62%] sm:w-[54%] max-w-[420px] aspect-[4/3] rounded-2xl overflow-hidden border border-white/10 shadow-2xl z-20 transition-all duration-700 ease-out ${
-                  davidJoined
-                    ? 'opacity-100 scale-100 translate-y-0'
-                    : 'opacity-0 scale-90 translate-y-4 pointer-events-none'
-                }`}
+                className="showcase-participant showcase-participant-second absolute aspect-[4/3] rounded-2xl overflow-hidden border border-white/10 bg-slate-900 shadow-2xl z-20"
               >
-                <video
-                  ref={davidVideoRef}
-                  src="/videos/david-stream.mp4"
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover"
-                />
-              </div>
-
-              {/* Meeting Call Control Buttons at Bottom */}
-              <div className="absolute bottom-0 inset-x-0 flex justify-center z-30 pb-1">
-                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-slate-900/90 backdrop-blur-xl border border-white/10 shadow-2xl">
-                  <button className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer" title="Microfone">
-                    <Mic className="w-3.5 h-3.5" />
-                  </button>
-                  <button className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer" title="Câmera">
-                    <Video className="w-3.5 h-3.5" />
-                  </button>
-                  <button className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer" title="Compartilhar Tela">
-                    <Share2 className="w-3.5 h-3.5" />
-                  </button>
-                  <button className="w-8 h-8 rounded-full bg-rose-600 hover:bg-rose-500 flex items-center justify-center text-white transition-colors cursor-pointer" title="Encerrar">
-                    <PhoneOff className="w-3.5 h-3.5" />
-                  </button>
+                <video ref={secondVideoRef} muted playsInline preload="metadata" className="w-full h-full object-cover">
+                  <source src="/videos/lucas-call.webm" type="video/webm" />
+                  <source src="/videos/lucas-call.mp4" type="video/mp4" />
+                </video>
+                <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/70 to-transparent" />
+                <div className="absolute left-3 bottom-3 inline-flex items-center gap-2 rounded-lg bg-black/60 backdrop-blur px-2.5 py-1.5 text-[10px] sm:text-xs font-semibold text-white">
+                  <span className="px-1.5 py-0.5 rounded bg-emerald-500 text-[9px]">PT</span>
+                  Lucas · Engineering
                 </div>
               </div>
 
             </div>
-
-            {/* Right: Full-Height Dedicated WhatsApp-Style Stacked Translation Chat Stream */}
-            <div className="w-full lg:w-[38%] flex flex-col h-[500px] lg:h-full">
-              
-              {/* Clean Single Centered Parrot Logo positioned cleanly at the top */}
-              <div className="flex items-center justify-center pt-1 pb-4 shrink-0">
-                <ParrotLogo className="w-10 h-10 drop-shadow-md" />
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-full bg-slate-900/95 border border-white/10 shadow-2xl" aria-label="Controles da chamada">
+                {[Mic, Video, Share2].map((Icon, index) => (
+                  <span key={index} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/10 flex items-center justify-center text-white">
+                    <Icon className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
+                  </span>
+                ))}
+                <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-rose-600 flex items-center justify-center text-white">
+                  <PhoneOff className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
+                </span>
               </div>
 
-              {/* Full-Height Stacked Chat Feed without scrollbar */}
-              <div
-                ref={chatScrollRef}
-                className="flex-1 w-full flex flex-col gap-3 justify-end overflow-y-auto px-1 py-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-                style={{
-                  maskImage: 'linear-gradient(to bottom, transparent 0%, black 12%)',
-                  WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 12%)'
-                }}
-              >
-                {messages.length === 0 && (
-                  <div className="text-center text-slate-500 text-xs font-mono py-12">
-                    Aguardando início da fala...
-                  </div>
-                )}
-
-                {messages.map((msg) => {
-                  const isDavid = msg.sender === 'david';
-
-                  if (isDavid) {
-                    // Green / Emerald bubble on the right side
-                    return (
-                      <div
-                        key={msg.id}
-                        className="self-end max-w-[92%] bg-emerald-600 text-white rounded-2xl rounded-tr-xs p-4 shadow-lg border border-emerald-500/40 animate-in fade-in slide-in-from-bottom-3 duration-300"
-                      >
-                        {/* Translated text in English on top */}
-                        <div className="text-sm font-medium text-white leading-relaxed">
-                          {msg.translatedText}
-                        </div>
-                        {/* Original spoken Portuguese subtitle underneath */}
-                        <div className="text-[11px] text-emerald-100/75 mt-1.5 pt-1.5 border-t border-emerald-500/60 font-mono">
-                          {msg.originalText}
-                        </div>
-                      </div>
-                    );
-                  }
-
-                  // White bubble on the left side
-                  return (
-                    <div
-                      key={msg.id}
-                      className="self-start max-w-[92%] bg-white text-slate-900 rounded-2xl rounded-tl-xs p-4 shadow-lg border border-slate-200/80 animate-in fade-in slide-in-from-bottom-3 duration-300"
-                    >
-                      {/* Translated text in Portuguese on top */}
-                      <div className="text-sm font-medium text-slate-900 leading-relaxed">
-                        {msg.translatedText}
-                      </div>
-                      {/* Original spoken English subtitle underneath */}
-                      <div className="text-[11px] text-slate-400 mt-1.5 pt-1.5 border-t border-slate-100 font-mono">
-                        {msg.originalText}
-                      </div>
+            <aside
+              className={`absolute left-3 right-3 bottom-20 h-[46%] sm:left-4 sm:right-4 lg:left-auto lg:right-5 lg:top-5 lg:bottom-20 lg:h-auto lg:w-[37%] transition-all duration-[1400ms] delay-150 ease-in-out ${
+                isOpening ? 'opacity-0 translate-y-12 lg:translate-y-0 lg:translate-x-12 pointer-events-none' : 'opacity-100 translate-y-0 translate-x-0'
+              }`}
+            >
+              <div className="relative h-full overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04]">
+                <div className="h-full flex flex-col p-4 sm:p-5">
+                  <div className="flex items-center justify-between pb-4 border-b border-white/[0.07]">
+                    <div>
+                      <p className="text-sm font-semibold text-white">Tradução ao vivo</p>
+                      <p className="text-[10px] font-mono text-slate-500 mt-0.5">Original + voz entregue</p>
                     </div>
-                  );
-                })}
+                    <div className="flex items-end gap-1 h-5" aria-hidden="true">
+                      {[8, 14, 19, 11, 16, 7].map((height, index) => (
+                        <span key={index} className="w-1 rounded-full bg-emerald-400 animate-wave" style={{ height: `${height}px`, animationDelay: `${index * 90}ms` }} />
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex-1 flex flex-col justify-end gap-2.5 py-4 overflow-hidden">
+                    {messages.map((message) => (
+                      <div
+                        key={message.id}
+                        className={`max-w-[94%] rounded-2xl p-3 shadow-lg animate-message-in ${
+                          message.side === 'local'
+                            ? 'self-end bg-emerald-500 text-emerald-950 rounded-br-md'
+                            : 'self-start bg-white text-slate-950 rounded-bl-md'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-4 mb-1.5">
+                          <span className={`text-[9px] font-mono font-bold ${message.side === 'local' ? 'text-emerald-950/60' : 'text-slate-400'}`}>{message.direction}</span>
+                          <span className={`text-[9px] ${message.side === 'local' ? 'text-emerald-950/50' : 'text-slate-400'}`}>voz traduzida</span>
+                        </div>
+                        <p className="text-xs sm:text-[13px] leading-relaxed font-semibold">{message.translatedText}</p>
+                        <p className={`mt-1.5 pt-1.5 border-t text-[9px] leading-relaxed ${message.side === 'local' ? 'border-emerald-700/15 text-emerald-950/60' : 'border-slate-100 text-slate-400'}`}>
+                          {message.originalText}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
-
-            </div>
-
+            </aside>
           </div>
 
+          {phase === 'cta' && (
+            <div className="absolute inset-0 z-50 flex items-center justify-center bg-[#05070b]/90 backdrop-blur-[3px] animate-message-in px-6">
+              <div className="text-center max-w-2xl">
+                <h3 className="text-3xl sm:text-5xl font-semibold tracking-[-0.04em] text-white leading-tight">
+                  Leve sua voz para a próxima conversa.
+                </h3>
+                <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+                  <a href={platform.downloadUrl} className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full bg-white text-slate-950 hover:bg-emerald-50 text-sm font-bold transition-colors">
+                    <PlatformBrandIcon platform={platform.os.startsWith('mac') ? 'apple' : 'windows'} className="w-4 h-4" />
+                    {platform.label}
+                  </a>
+                  <a href="#support" className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3.5 rounded-full border border-white/25 bg-white/[0.05] text-white hover:bg-white/10 text-sm font-semibold transition-colors">
+                    Apoiar a iniciativa
+                  </a>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-
       </div>
     </section>
   );

@@ -3,8 +3,8 @@ import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { ScrollShowcase } from './components/ScrollShowcase';
 import { FeatureShowcase } from './components/FeatureShowcase';
-import { LiveSimulator } from './components/LiveSimulator';
 import { ComparisonTable } from './components/ComparisonTable';
+import { Supporters } from './components/Supporters';
 import { FAQ } from './components/FAQ';
 import { DownloadCTA } from './components/DownloadCTA';
 import { Footer } from './components/Footer';
@@ -19,8 +19,8 @@ export function App() {
         <Hero />
         <ScrollShowcase />
         <FeatureShowcase />
-        <LiveSimulator />
         <ComparisonTable />
+        <Supporters />
         <FAQ />
         <DownloadCTA />
       </main>

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Heart } from 'lucide-react';
 import { GithubIcon } from './GithubIcon';
 import { ParrotLogo } from './ParrotLogo';
 
@@ -23,20 +22,20 @@ export const Footer: React.FC = () => {
           <a href="#showcase" className="hover:text-slate-900 transition-colors cursor-pointer">
             Reunião em Vídeo
           </a>
-          <a href="#simulator" className="hover:text-slate-900 transition-colors cursor-pointer">
-            Simulador
+          <a href="#features" className="hover:text-slate-900 transition-colors cursor-pointer">
+            Tecnologia
           </a>
-          <a href="#architecture" className="hover:text-slate-900 transition-colors cursor-pointer">
-            CoreAudio Driver
+          <a href="#support" className="hover:text-slate-900 transition-colors cursor-pointer">
+            Apoiadores
           </a>
           <a
-            href="https://github.com/davidjunior/parrot"
+            href="https://github.com/GitDavidJr"
             target="_blank"
             rel="noreferrer"
             className="flex items-center gap-1.5 hover:text-slate-900 transition-colors cursor-pointer"
           >
             <GithubIcon className="w-3.5 h-3.5" />
-            <span>Repositório GitHub</span>
+            <span>GitHub</span>
           </a>
         </div>
 

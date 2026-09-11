@@ -16,7 +16,7 @@ export function usePlatform(): PlatformInfo {
     osName: 'macOS (Apple Silicon)',
     badge: 'M1 / M2 / M3 / M4',
     fileName: 'Parrot-macOS.dmg',
-    downloadUrl: 'https://github.com/davidjunior/parrot/releases/latest/download/Parrot-macOS.dmg'
+    downloadUrl: 'https://github.com/GitDavidJr/parrot/releases/latest/download/Parrot-macOS.dmg'
   });
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export function usePlatform(): PlatformInfo {
         osName: 'Windows 10 / 11',
         badge: 'x64 • Instalador Direto',
         fileName: 'Parrot-Windows-x64.zip',
-        downloadUrl: 'https://github.com/davidjunior/parrot/releases/latest/download/Parrot-Windows-x64.zip'
+        downloadUrl: 'https://github.com/GitDavidJr/parrot/releases/latest/download/Parrot-Windows-x64.zip'
       });
     } else if (userAgent.includes('mac') || platformStr.includes('mac')) {
       // Default to Apple Silicon as modern standard (M1-M4)
@@ -42,7 +42,7 @@ export function usePlatform(): PlatformInfo {
         osName: 'macOS (Apple Silicon)',
         badge: 'M1 / M2 / M3 / M4',
         fileName: 'Parrot-macOS.dmg',
-        downloadUrl: 'https://github.com/davidjunior/parrot/releases/latest/download/Parrot-macOS.dmg'
+        downloadUrl: 'https://github.com/GitDavidJr/parrot/releases/latest/download/Parrot-macOS.dmg'
       });
     } else if (userAgent.includes('linux')) {
       setPlatform({
@@ -51,7 +51,7 @@ export function usePlatform(): PlatformInfo {
         osName: 'Linux x86_64',
         badge: 'Tarball / AppImage',
         fileName: 'Parrot-linux-x64.tar.gz',
-        downloadUrl: 'https://github.com/davidjunior/parrot/releases/latest'
+        downloadUrl: 'https://github.com/GitDavidJr/parrot/releases/latest'
       });
     }
   }, []);
