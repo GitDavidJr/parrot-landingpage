@@ -143,26 +143,26 @@ export const ScrollShowcase: React.FC = () => {
             </div>
               <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-full bg-slate-900/95 border border-white/10 shadow-2xl" aria-label="Controles da chamada">
                 {[Mic, Video, Share2].map((Icon, index) => (
-                  <span key={index} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/10 flex items-center justify-center text-white">
+                  <span key={index} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/10 flex items-center justify-center text-white cursor-pointer">
                     <Icon className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
                   </span>
                 ))}
-                <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-rose-600 flex items-center justify-center text-white">
+                <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-rose-600 flex items-center justify-center text-white cursor-pointer">
                   <PhoneOff className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
                 </span>
               </div>
 
             <aside
-              className={`absolute left-3 right-3 bottom-20 h-[46%] sm:left-4 sm:right-4 lg:left-auto lg:right-5 lg:top-5 lg:bottom-20 lg:h-auto lg:w-[37%] transition-all duration-[1400ms] delay-150 ease-in-out ${
+              className={`absolute left-2.5 right-2.5 bottom-16 h-[50%] sm:left-4 sm:right-4 sm:bottom-20 sm:h-[46%] lg:left-auto lg:right-5 lg:top-5 lg:bottom-20 lg:h-auto lg:w-[37%] transition-all duration-[1400ms] delay-150 ease-in-out ${
                 isOpening ? 'opacity-0 translate-y-12 lg:translate-y-0 lg:translate-x-12 pointer-events-none' : 'opacity-100 translate-y-0 translate-x-0'
               }`}
             >
               <div className="relative h-full overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04]">
-                <div className="h-full flex flex-col p-4 sm:p-5">
-                  <div className="flex items-center justify-between pb-4 border-b border-white/[0.07]">
+                <div className="h-full flex flex-col p-3 sm:p-5">
+                  <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-white/[0.07]">
                     <div>
-                      <p className="text-sm font-semibold text-white">Tradução ao vivo</p>
-                      <p className="text-[10px] font-mono text-slate-500 mt-0.5">Original + voz entregue</p>
+                      <p className="text-xs sm:text-sm font-semibold text-white">Tradução ao vivo</p>
+                      <p className="text-[9px] sm:text-[10px] font-mono text-slate-500 mt-0.5">Original + voz entregue</p>
                     </div>
                     <div className="flex items-end gap-1 h-5" aria-hidden="true">
                       {[8, 14, 19, 11, 16, 7].map((height, index) => (
@@ -171,22 +171,22 @@ export const ScrollShowcase: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="flex-1 flex flex-col justify-end gap-2.5 py-4 overflow-hidden">
+                  <div className="flex-1 flex flex-col justify-end gap-2 sm:gap-2.5 py-2 sm:py-4 overflow-y-auto">
                     {messages.map((message) => (
                       <div
                         key={message.id}
-                        className={`max-w-[94%] rounded-2xl p-3 shadow-lg animate-message-in ${
+                        className={`max-w-[94%] rounded-xl sm:rounded-2xl p-2.5 sm:p-3 shadow-lg animate-message-in ${
                           message.side === 'local'
-                            ? 'self-end bg-emerald-500 text-emerald-950 rounded-br-md'
-                            : 'self-start bg-white text-slate-950 rounded-bl-md'
+                            ? 'self-end bg-emerald-500 text-emerald-950 rounded-br-sm sm:rounded-br-md'
+                            : 'self-start bg-white text-slate-950 rounded-bl-sm sm:rounded-bl-md'
                         }`}
                       >
-                        <div className="flex items-center justify-between gap-4 mb-1.5">
-                          <span className={`text-[9px] font-mono font-bold ${message.side === 'local' ? 'text-emerald-950/60' : 'text-slate-400'}`}>{message.direction}</span>
-                          <span className={`text-[9px] ${message.side === 'local' ? 'text-emerald-950/50' : 'text-slate-400'}`}>voz traduzida</span>
+                        <div className="flex items-center justify-between gap-3 sm:gap-4 mb-1">
+                          <span className={`text-[8px] sm:text-[9px] font-mono font-bold ${message.side === 'local' ? 'text-emerald-950/60' : 'text-slate-400'}`}>{message.direction}</span>
+                          <span className={`text-[8px] sm:text-[9px] ${message.side === 'local' ? 'text-emerald-950/50' : 'text-slate-400'}`}>voz traduzida</span>
                         </div>
-                        <p className="text-xs sm:text-[13px] leading-relaxed font-semibold">{message.translatedText}</p>
-                        <p className={`mt-1.5 pt-1.5 border-t text-[9px] leading-relaxed ${message.side === 'local' ? 'border-emerald-700/15 text-emerald-950/60' : 'border-slate-100 text-slate-400'}`}>
+                        <p className="text-[11px] sm:text-[13px] leading-snug sm:leading-relaxed font-semibold">{message.translatedText}</p>
+                        <p className={`mt-1 sm:mt-1.5 pt-1 sm:pt-1.5 border-t text-[8px] sm:text-[9px] leading-snug sm:leading-relaxed ${message.side === 'local' ? 'border-emerald-700/15 text-emerald-950/60' : 'border-slate-100 text-slate-400'}`}>
                           {message.originalText}
                         </p>
                       </div>
@@ -198,17 +198,17 @@ export const ScrollShowcase: React.FC = () => {
           </div>
 
           {phase === 'cta' && (
-            <div className="absolute inset-0 z-50 flex items-center justify-center bg-[#05070b]/90 backdrop-blur-[3px] animate-message-in px-6">
+            <div className="absolute inset-0 z-50 flex items-center justify-center bg-[#05070b]/90 backdrop-blur-[3px] animate-message-in px-4 sm:px-6">
               <div className="text-center max-w-2xl">
-                <h3 className="text-3xl sm:text-5xl font-semibold tracking-[-0.04em] text-white leading-tight">
+                <h3 className="text-2xl sm:text-4xl lg:text-5xl font-semibold tracking-[-0.04em] text-white leading-tight">
                   Leve sua voz para a próxima conversa.
                 </h3>
-                <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-                  <a href={platform.downloadUrl} className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full bg-white text-slate-950 hover:bg-emerald-50 text-sm font-bold transition-colors">
+                <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+                  <a href={platform.downloadUrl} className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full bg-white text-slate-950 hover:bg-emerald-50 text-sm font-bold transition-colors cursor-pointer">
                     <PlatformBrandIcon platform={platform.os.startsWith('mac') ? 'apple' : 'windows'} className="w-4 h-4" />
                     {platform.label}
                   </a>
-                  <a href="#support" className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3.5 rounded-full border border-white/25 bg-white/[0.05] text-white hover:bg-white/10 text-sm font-semibold transition-colors">
+                  <a href="#support" className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3.5 rounded-full border border-white/25 bg-white/[0.05] text-white hover:bg-white/10 text-sm font-semibold transition-colors cursor-pointer">
                     Apoiar a iniciativa
                   </a>
                 </div>

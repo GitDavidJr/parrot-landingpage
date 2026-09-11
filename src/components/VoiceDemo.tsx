@@ -257,19 +257,19 @@ export const VoiceDemo: React.FC = () => {
   const isActive = status !== 'idle';
 
   return (
-    <div className="relative inline-flex">
+    <div className="relative inline-flex w-full sm:w-auto justify-center">
       {/* Minimalist Floating Status Popup / Pill */}
       {isActive && (
         <div
           role="status"
           aria-live="polite"
-          className="absolute -top-12 left-1/2 -translate-x-1/2 whitespace-nowrap z-30 pointer-events-none animate-in fade-in zoom-in-95 duration-200"
+          className="absolute -top-12 left-1/2 -translate-x-1/2 whitespace-nowrap z-30 pointer-events-none animate-in fade-in zoom-in-95 duration-200 max-w-[92vw]"
         >
           <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950/90 backdrop-blur-md text-white text-xs font-medium shadow-xl border border-white/10">
             {status === 'listening' && (
               <>
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-                <span className="max-w-[220px] sm:max-w-xs truncate text-slate-200">
+                <span className="max-w-[170px] sm:max-w-xs truncate text-slate-200">
                   {transcript ? `"${transcript}"` : 'Fale algo em português...'}
                 </span>
               </>
@@ -283,7 +283,7 @@ export const VoiceDemo: React.FC = () => {
             {status === 'speaking' && (
               <>
                 <Volume2 className="w-3.5 h-3.5 text-emerald-400 animate-pulse shrink-0" />
-                <span className="text-emerald-300 font-semibold max-w-[220px] sm:max-w-xs truncate">
+                <span className="text-emerald-300 font-semibold max-w-[170px] sm:max-w-xs truncate">
                   {translation ? `"${translation}"` : 'Reproduzindo nos fones...'}
                 </span>
               </>
@@ -291,7 +291,7 @@ export const VoiceDemo: React.FC = () => {
             {status === 'error' && (
               <>
                 <span className="w-2 h-2 rounded-full bg-rose-400 shrink-0" />
-                <span className="text-rose-200">{errorMessage || 'Erro no microfone'}</span>
+                <span className="text-rose-200 max-w-[170px] sm:max-w-xs truncate">{errorMessage || 'Erro no microfone'}</span>
               </>
             )}
           </div>
@@ -303,7 +303,7 @@ export const VoiceDemo: React.FC = () => {
         type="button"
         onClick={handleClick}
         aria-label={isActive ? 'Parar teste de voz' : 'Testar com minha voz'}
-        className={`inline-flex items-center justify-center rounded-full border text-sm sm:text-base font-semibold shadow-sm transition-all duration-200 hover:-translate-y-0.5 cursor-pointer select-none px-7 py-4 min-w-[240px] sm:min-w-[246px] h-[56px] ${
+        className={`w-full sm:w-auto inline-flex items-center justify-center rounded-full border text-sm sm:text-base font-semibold shadow-sm transition-all duration-200 hover:-translate-y-0.5 cursor-pointer select-none px-6 sm:px-7 py-4 min-w-0 sm:min-w-[246px] h-[56px] ${
           isActive
             ? 'border-emerald-400 bg-emerald-50/80 text-emerald-950 hover:bg-emerald-100/80 ring-2 ring-emerald-500/20 shadow-md'
             : 'border-slate-300 bg-white/80 hover:bg-white hover:border-slate-400 text-slate-900 hover:shadow-md'

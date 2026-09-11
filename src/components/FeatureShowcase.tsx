@@ -12,20 +12,20 @@ export const FeatureShowcase: React.FC = () => {
   }, []);
 
   return (
-    <section id="features" className="pt-12 sm:pt-16 pb-20 lg:pt-20 lg:pb-32 bg-white relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 lg:space-y-32">
+    <section id="features" className="pt-12 sm:pt-16 pb-16 sm:pb-20 lg:pt-20 lg:pb-32 bg-white relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 sm:space-y-24 lg:space-y-32">
 
         {/* ============================================================ */}
         {/* SHOWCASE 1: CoreAudio & WASAPI Driver                        */}
         {/* ============================================================ */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
           
           {/* Left: Typography & Copy */}
           <div className="lg:col-span-5">
-            <h2 className="text-4xl sm:text-5xl font-medium tracking-tight text-slate-900 font-sans leading-[1.15] mb-6">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900 font-sans leading-[1.15] mb-4 sm:mb-6">
               Driver CoreAudio & WASAPI
             </h2>
-            <p className="text-base sm:text-lg text-slate-600 font-normal leading-relaxed">
+            <p className="text-sm sm:text-lg text-slate-600 font-normal leading-relaxed">
               Isolamento bidirecional direto no nível do sistema operacional. O microfone e o áudio da chamada
               rodam em canais separados — reduzindo eco e retorno sem exigir um bot dentro da reunião.
             </p>
@@ -33,35 +33,35 @@ export const FeatureShowcase: React.FC = () => {
 
           {/* Right: Mac System Window (Sem card em volta de card) */}
           <div className="lg:col-span-7">
-            <div className="w-full bg-white rounded-2xl shadow-xl border border-slate-200/80 p-6 sm:p-8">
+            <div className="w-full bg-white rounded-2xl shadow-xl border border-slate-200/80 p-4 sm:p-8">
               
               {/* Window Header with Traffic Lights */}
-              <div className="flex items-center justify-between pb-5 border-b border-slate-100 mb-6">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-rose-500 inline-block" />
-                  <span className="w-3 h-3 rounded-full bg-amber-400 inline-block" />
-                  <span className="w-3 h-3 rounded-full bg-emerald-500 inline-block" />
-                  <span className="ml-2 text-xs font-semibold text-slate-500 font-mono">
+              <div className="flex items-center justify-between pb-4 sm:pb-5 border-b border-slate-100 mb-5 sm:mb-6 gap-2">
+                <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                  <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-rose-500 shrink-0 inline-block" />
+                  <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-amber-400 shrink-0 inline-block" />
+                  <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-emerald-500 shrink-0 inline-block" />
+                  <span className="ml-1 sm:ml-2 text-[11px] sm:text-xs font-semibold text-slate-500 font-mono truncate">
                     macOS CoreAudio • Virtual Audio Device
                   </span>
                 </div>
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-semibold border border-emerald-200">
+                <div className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] sm:text-[11px] font-semibold border border-emerald-200 shrink-0">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   <span>Driver Ativo</span>
                 </div>
               </div>
 
               {/* Channel Routing Visualizer */}
-              <div className="space-y-6 font-mono text-xs">
+              <div className="space-y-5 sm:space-y-6 font-mono text-xs">
                 
                 {/* Channel 1: Mic Input */}
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2 text-slate-800 font-semibold">
-                      <Mic className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>Canal 1: Microfone Físico</span>
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <div className="flex items-center gap-1.5 sm:gap-2 text-slate-800 font-semibold truncate">
+                      <Mic className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span className="truncate">Canal 1: Microfone Físico</span>
                     </div>
-                    <span className="text-emerald-700 font-bold text-[11px]">Local Speech (PT)</span>
+                    <span className="text-emerald-700 font-bold text-[10px] sm:text-[11px] shrink-0">Local Speech (PT)</span>
                   </div>
                   {/* Live Wave Meter */}
                   <div className="flex items-center gap-1 h-3 bg-slate-50 p-1.5 rounded-lg border border-slate-100">
@@ -80,12 +80,12 @@ export const FeatureShowcase: React.FC = () => {
 
                 {/* Channel 2: Room Audio */}
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2 text-slate-800 font-semibold">
-                      <Radio className="w-3.5 h-3.5 text-blue-600" />
-                      <span>Canal 2: Áudio da Chamada</span>
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <div className="flex items-center gap-1.5 sm:gap-2 text-slate-800 font-semibold truncate">
+                      <Radio className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                      <span className="truncate">Canal 2: Áudio da Chamada</span>
                     </div>
-                    <span className="text-blue-700 font-bold text-[11px]">Remote Audio (EN)</span>
+                    <span className="text-blue-700 font-bold text-[10px] sm:text-[11px] shrink-0">Remote Audio (EN)</span>
                   </div>
                   {/* Live Wave Meter */}
                   <div className="flex items-center gap-1 h-3 bg-slate-50 p-1.5 rounded-lg border border-slate-100">
@@ -105,9 +105,9 @@ export const FeatureShowcase: React.FC = () => {
               </div>
 
               {/* Bottom Spec Footer */}
-              <div className="mt-6 pt-5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-mono">
+              <div className="mt-5 sm:mt-6 pt-4 sm:pt-5 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-500 font-mono">
                 <div className="flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-600" />
+                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                   <span>Filtro de Loopback: Zero Eco</span>
                 </div>
                 <div className="text-slate-700 font-bold">Pipeline em streaming</div>
@@ -122,14 +122,14 @@ export const FeatureShowcase: React.FC = () => {
         {/* ============================================================ */}
         {/* SHOWCASE 2: 100% Invisível / Zero Bots                       */}
         {/* ============================================================ */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
           
           {/* Right on Mobile / Left on Desktop: Typography & Copy */}
           <div className="lg:col-span-5 lg:order-2">
-            <h2 className="text-4xl sm:text-5xl font-medium tracking-tight text-slate-900 font-sans leading-[1.15] mb-6">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900 font-sans leading-[1.15] mb-4 sm:mb-6">
               100% Invisível
             </h2>
-            <p className="text-base sm:text-lg text-slate-600 font-normal leading-relaxed">
+            <p className="text-sm sm:text-lg text-slate-600 font-normal leading-relaxed">
               Nenhum robô entra na sala do Google Meet, Zoom ou Teams. Suas conversas não sofrem
               bloqueios de segurança corporativa, e nenhum dado de áudio é retido ou salvo em disco.
             </p>
@@ -137,24 +137,24 @@ export const FeatureShowcase: React.FC = () => {
 
           {/* Terminal Window (Sem card em volta de card) */}
           <div className="lg:col-span-7 lg:order-1">
-            <div className="w-full bg-[#0b0f19] rounded-2xl border border-slate-800 p-6 sm:p-8 shadow-2xl">
+            <div className="w-full bg-[#0b0f19] rounded-2xl border border-slate-800 p-4 sm:p-8 shadow-2xl">
               
               {/* Traffic Lights */}
-              <div className="flex items-center justify-between pb-5 border-b border-slate-800/80 mb-5">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-rose-500 inline-block" />
-                  <span className="w-3 h-3 rounded-full bg-amber-400 inline-block" />
-                  <span className="w-3 h-3 rounded-full bg-emerald-500 inline-block" />
-                  <span className="ml-2 text-xs font-mono text-slate-400">parrot-service — local runtime</span>
+              <div className="flex items-center justify-between pb-4 sm:pb-5 border-b border-slate-800/80 mb-4 sm:mb-5 gap-2">
+                <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                  <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-rose-500 shrink-0 inline-block" />
+                  <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-amber-400 shrink-0 inline-block" />
+                  <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-emerald-500 shrink-0 inline-block" />
+                  <span className="ml-1 sm:ml-2 text-[11px] sm:text-xs font-mono text-slate-400 truncate">parrot-service — local runtime</span>
                 </div>
-                <div className="text-[11px] font-mono text-emerald-400 font-semibold flex items-center gap-1.5">
+                <div className="text-[10px] sm:text-[11px] font-mono text-emerald-400 font-semibold flex items-center gap-1.5 shrink-0">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
                   <span>0 bots ativos</span>
                 </div>
               </div>
 
               {/* Monospace Log Lines */}
-              <div className="font-mono text-xs text-slate-300 space-y-3">
+              <div className="font-mono text-[11px] sm:text-xs text-slate-300 space-y-2.5 sm:space-y-3 overflow-x-auto">
                 <div className="text-slate-400">
                   <span className="text-emerald-400">$</span> parrot start --mode=bidirectional --privacy=zero-retention
                 </div>
@@ -170,7 +170,7 @@ export const FeatureShowcase: React.FC = () => {
                 <div className="text-blue-400">
                   ✓ Corporate security policy: 100% compliant
                 </div>
-                <div className="pt-3 border-t border-slate-800 text-slate-400 flex items-center justify-between">
+                <div className="pt-3 border-t border-slate-800 text-slate-400 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <span>Retenção em disco: 0 bytes</span>
                   <span className="text-emerald-400 font-bold">● Streaming Ativo</span>
                 </div>

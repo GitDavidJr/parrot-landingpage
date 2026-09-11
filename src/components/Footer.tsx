@@ -4,21 +4,21 @@ import { ParrotLogo } from './ParrotLogo';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-white border-t border-slate-200 py-12">
+    <footer className="bg-white border-t border-slate-200 py-10 sm:py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
         
         {/* Brand */}
-        <div className="flex items-center gap-3">
-          <ParrotLogo className="w-8 h-8 drop-shadow-xs" />
+        <div className="flex flex-wrap items-center justify-center sm:justify-start text-center sm:text-left gap-2 sm:gap-3">
+          <ParrotLogo className="w-7 h-7 sm:w-8 sm:h-8 drop-shadow-xs shrink-0" />
           <span className="font-bold text-slate-900 text-sm">Parrot</span>
-          <span className="text-xs text-slate-400">|</span>
+          <span className="hidden xs:inline text-xs text-slate-400">|</span>
           <span className="text-xs text-slate-500">
             © {new Date().getFullYear()} Parrot Project. Código aberto sob licença MIT.
           </span>
         </div>
 
         {/* Navigation / Links */}
-        <div className="flex items-center gap-6 text-xs text-slate-600">
+        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-slate-600">
           <a href="#showcase" className="hover:text-slate-900 transition-colors cursor-pointer">
             Reunião em Vídeo
           </a>

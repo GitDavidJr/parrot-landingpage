@@ -41,16 +41,16 @@ export const FAQ: React.FC = () => {
   };
 
   return (
-    <section id="faq" className="py-24 bg-white">
+    <section id="faq" className="py-16 sm:py-24 bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="text-center mb-14">
-          <h2 className="text-3xl sm:text-5xl font-medium tracking-tight text-slate-900 font-sans">
+        <div className="text-center mb-10 sm:mb-14">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900 font-sans">
             Perguntas Frequentes
           </h2>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {FAQS.map((faq, idx) => {
             const isOpen = openIdx === idx;
             return (
@@ -60,17 +60,17 @@ export const FAQ: React.FC = () => {
               >
                 <button
                   onClick={() => toggle(idx)}
-                  className="w-full text-left py-5 px-6 flex items-center justify-between gap-4 font-bold text-slate-900 text-base sm:text-lg cursor-pointer"
+                  className="w-full text-left py-4 px-4 sm:py-5 sm:px-6 flex items-center justify-between gap-3 sm:gap-4 font-bold text-slate-900 text-sm sm:text-base cursor-pointer"
                 >
-                  <span>{faq.q}</span>
+                  <span className="leading-snug">{faq.q}</span>
                   <ChevronDown
-                    className={`w-5 h-5 text-slate-400 transition-transform duration-200 flex-shrink-0 ${
+                    className={`w-4 h-4 sm:w-5 sm:h-5 text-slate-400 transition-transform duration-200 flex-shrink-0 ${
                       isOpen ? 'rotate-180 text-slate-800' : ''
                     }`}
                   />
                 </button>
                 {isOpen && (
-                  <div className="px-6 pb-6 text-sm sm:text-base text-slate-600 leading-relaxed border-t border-slate-100 pt-4">
+                  <div className="px-4 pb-4 sm:px-6 sm:pb-6 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3 sm:pt-4">
                     {faq.a}
                   </div>
                 )}

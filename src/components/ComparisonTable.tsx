@@ -62,19 +62,78 @@ const COMPARISONS: Row[] = [
 ];
 
 export const ComparisonTable: React.FC = () => {
+  const renderCell = (val: boolean | string, isParrot = false) => {
+    if (typeof val === 'boolean') {
+      if (val) {
+        return (
+          <div className="inline-flex items-center gap-1.5 text-emerald-700 font-semibold text-xs sm:text-sm">
+            <Check className="w-4 h-4 stroke-[3]" />
+            <span>Sim</span>
+          </div>
+        );
+      }
+      return (
+        <div className="inline-flex items-center gap-1.5 text-rose-600 font-semibold text-xs sm:text-sm">
+          <X className="w-4 h-4" />
+          <span>Não</span>
+        </div>
+      );
+    }
+    return (
+      <span className={isParrot ? 'text-emerald-800 font-bold text-xs sm:text-sm' : 'text-slate-600 text-xs sm:text-sm'}>
+        {val}
+      </span>
+    );
+  };
+
   return (
-    <section id="compare" className="py-24 bg-slate-50/50 border-t border-slate-200/80">
+    <section id="compare" className="py-16 sm:py-24 bg-slate-50/50 border-t border-slate-200/80">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-14">
-          <h2 className="text-3xl sm:text-5xl font-medium tracking-tight text-slate-900 font-sans">
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-slate-900 font-sans">
             Por que o Parrot é diferente
           </h2>
         </div>
 
-        {/* Table Container */}
-        <div className="bg-white rounded-3xl shadow-sm border border-slate-200/90 overflow-x-auto">
+        {/* Mobile View: Comparison Cards */}
+        <div className="sm:hidden space-y-3.5">
+          {COMPARISONS.map((row, idx) => (
+            <div
+              key={idx}
+              className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs space-y-3"
+            >
+              <h3 className="text-sm font-bold text-slate-900 leading-snug">
+                {row.feature}
+              </h3>
+
+              {/* Parrot Highlight */}
+              <div className="flex items-center justify-between p-3 rounded-xl bg-emerald-50/80 border border-emerald-200/60">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-900">
+                  <span className="text-sm">🦜</span>
+                  <span>Parrot 2.0</span>
+                </div>
+                <div>{renderCell(row.parrot, true)}</div>
+              </div>
+
+              {/* Others Grid */}
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                  <div className="text-[10px] text-slate-500 font-medium mb-1">Bots de Reunião</div>
+                  <div>{renderCell(row.bots)}</div>
+                </div>
+                <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                  <div className="text-[10px] text-slate-500 font-medium mb-1">Legendas Nativas</div>
+                  <div>{renderCell(row.captions)}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop View: Full Table Container */}
+        <div className="hidden sm:block bg-white rounded-3xl shadow-sm border border-slate-200/90 overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[640px]">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50/70">
